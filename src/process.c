@@ -24,6 +24,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
+#include <termios.h>
 #include <unistd.h>
 #include <wayland-server-core.h>
 #include <wayland-util.h>
@@ -152,8 +153,22 @@ void setup_process(struct cwc_server *s)
     sigaction(SIGCHLD, &sigchld_act, NULL);
 
     struct sigaction graceful_act = {.sa_handler = graceful_handler};
-    sigaction(SIGINT, &graceful_act, NULL);
     sigaction(SIGTERM, &graceful_act, NULL);
+
+    // Disable ISIG on the controlling TTY so that Ctrl+C no longer generates
+    // SIGINT for the session process group. wlroots sets KDSKBMODE to K_OFF
+    // which stops key translation, but the line discipline's signal generation
+    // (ISIG) remains active. Other compositors (cosmic-comp, Xorg) disable
+    // this; wlroots does not, so we handle it here.
+    int tty_fd = open("/dev/tty", O_RDWR | O_NOCTTY);
+    if (tty_fd >= 0) {
+        struct termios t;
+        if (tcgetattr(tty_fd, &t) == 0) {
+            t.c_lflag &= ~ISIG;
+            tcsetattr(tty_fd, TCSANOW, &t);
+        }
+        close(tty_fd);
+    }
 
     wl_event_loop_add_fd(s->wl_event_loop, sigpfd[0], WL_EVENT_READABLE,
                          on_sigpfd_ready, &sigpfd);
