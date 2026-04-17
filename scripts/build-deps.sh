@@ -55,18 +55,18 @@ check_cmd() {
 # System packages
 # ---------------------------------------------------------------------------
 SYSTEM_PKGS=(
-    meson ninja-build cmake g++-14
+    meson ninja-build cmake g++-14 bison
     wayland-protocols libwayland-dev
     libcairo2-dev libxkbcommon-dev libinput-dev libxxhash-dev
     libluajit-5.1-dev libxcb1-dev xwayland libdrm-dev
     lua-lgi libpango1.0-dev gir1.2-pango-1.0
-    libzip-dev librsvg2-dev libtomlplusplus-dev hwdata
+    librsvg2-dev hwdata
     libseat-dev libudev-dev libgbm-dev libgles-dev libegl-dev
     libvulkan-dev glslang-tools liblcms2-dev
     libxcb-dri3-dev libxcb-present-dev libxcb-render-util0-dev
     libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xinput-dev
     libxcb-composite0-dev libxcb-ewmh-dev libxcb-icccm4-dev
-    libxcb-res0-dev libxcb-errors-dev
+    libxcb-res0-dev libxcb-errors-dev libxcb-xkb-dev
     libffi-dev libexpat1-dev libxml2-dev libliftoff-dev
 )
 
@@ -118,7 +118,7 @@ check_pkg "hyprutils"        "0.7.1"  || needs_hyprutils=true
 check_pkg "hyprlang"         "0.4.2"  || needs_hyprlang=true
 check_pkg "hyprcursor"       "0.1.0"  || needs_hyprcursor=true
 check_pkg "wayland-server"   "1.24.0" || needs_wayland=true
-check_pkg "wayland-protocols" "1.38"  || needs_wayland_protocols=true
+check_pkg "wayland-protocols" "1.47"  || needs_wayland_protocols=true
 check_pkg "libdrm"           "2.4.129" || needs_libdrm=true
 check_pkg "pixman-1"         "0.43.0" || needs_pixman=true
 check_pkg "libdisplay-info"  "0.2.0"  || needs_libdisplay_info=true

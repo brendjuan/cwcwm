@@ -12,17 +12,17 @@ sudo add-apt-repository universe
 
 sudo apt update
 
-sudo apt install meson ninja-build wayland-protocols libwayland-dev \
+sudo apt install meson ninja-build bison wayland-protocols libwayland-dev \
   libcairo2-dev libxkbcommon-dev libinput-dev libxxhash-dev \
   libluajit-5.1-dev libxcb1-dev xwayland libdrm-dev lua-lgi \
-  libpango1.0-dev gir1.2-pango-1.0 libzip-dev librsvg2-dev \
+  libpango1.0-dev gir1.2-pango-1.0 librsvg2-dev \
   libseat-dev libudev-dev libgbm-dev libgles-dev libegl-dev \
   libvulkan-dev glslang-tools liblcms2-dev libxcb-dri3-dev \
   libxcb-present-dev libxcb-render-util0-dev libxcb-shm0-dev \
   libxcb-xfixes0-dev libxcb-xinput-dev libxcb-composite0-dev \
-  libxcb-ewmh-dev libxcb-icccm4-dev libxcb-res0-dev \
+  libxcb-ewmh-dev libxcb-icccm4-dev libxcb-res0-dev libxcb-xkb-dev \
   libffi-dev libexpat1-dev libxml2-dev libliftoff-dev cmake g++-14 \
-  libtomlplusplus-dev hwdata
+  hwdata
 ```
 
 ## Dependencies built from source
