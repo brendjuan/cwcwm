@@ -69,3 +69,25 @@ required (wlroots 0.20 needs xkbcommon >= 1.8.0; cwc uses
 detects these and builds newer versions from source into `/usr/local`
 (side-by-side with the system packages, so GNOME/GDM are unaffected).
 Pop!_OS 24.04 ships newer versions and skips these steps.
+
+## Default config runtime dependencies
+
+The shipped config ([`defconfig/rc.lua`](../defconfig/rc.lua) and
+[`defconfig/oneshot.lua`](../defconfig/oneshot.lua)) autostarts several
+programs. Install them or edit the config to remove the ones you don't want:
+
+```bash
+sudo apt install kitty waybar swaybg swayidle playerctl copyq \
+  brightnessctl flameshot xdg-desktop-portal-wlr
+```
+
+Or via the build script:
+
+```bash
+./scripts/build-deps.sh --install-config-deps
+```
+
+The default config also sets `HYPRCURSOR_THEME=Bibata-Modern-Classic`. That
+theme is not packaged in Ubuntu — install it manually from
+[Bibata_Cursor](https://github.com/ful1e5/Bibata_Cursor) or edit
+`oneshot.lua` to remove the `setenv` call.

@@ -4,12 +4,14 @@
 # This script checks for required dependency versions and builds from source
 # when the system packages are too old. Run from the cwcwm repo directory.
 #
-# Usage: ./scripts/build-deps.sh [--install-system-deps] [--build-dir DIR]
+# Usage: ./scripts/build-deps.sh [--install-system-deps] [--install-config-deps] [--build-dir DIR]
+#        ./scripts/build-deps.sh -h | --help
 
 set -euo pipefail
 
 BUILD_DIR="${BUILD_DIR:-$(dirname "$(realpath "$0")")/../cwc-deps}"
 INSTALL_SYSTEM=false
+INSTALL_CONFIG=false
 JOBS=$(nproc)
 
 RED='\033[0;31m'
@@ -22,11 +24,33 @@ log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_err()  { echo -e "${RED}[ERROR]${NC} $1"; }
 log_info() { echo -e "[INFO] $1"; }
 
+usage() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Checks CwC's dependency versions and builds any that are too old from source.
+
+Options:
+  --install-system-deps   apt-install the build-time packages needed to compile
+                          cwc and its source-built dependencies
+  --install-config-deps   apt-install the runtime packages spawned by the default
+                          config (kitty, waybar, swaybg, etc.)
+  --build-dir DIR         where source-built deps are checked out and compiled
+                          (default: <repo>/cwc-deps)
+  -h, --help              show this help and exit
+
+With no flags the script skips apt and only checks/builds source dependencies.
+EOF
+}
+
 for arg in "$@"; do
     case "$arg" in
         --install-system-deps) INSTALL_SYSTEM=true ;;
+        --install-config-deps) INSTALL_CONFIG=true ;;
         --build-dir=*) BUILD_DIR="${arg#*=}" ;;
         --build-dir) shift; BUILD_DIR="$1" ;;
+        -h|--help) usage; exit 0 ;;
+        *) log_err "Unknown option: $arg"; usage; exit 1 ;;
     esac
 done
 
@@ -71,10 +95,27 @@ SYSTEM_PKGS=(
     libffi-dev libexpat1-dev libxml2-dev libliftoff-dev
 )
 
+# Runtime apps the default config (defconfig/rc.lua + oneshot.lua) spawns.
+# Not required to build cwc — only needed if you plan to use the default config.
+# Bibata-Modern-Classic cursor theme must be installed manually (not in Ubuntu repos).
+CONFIG_PKGS=(
+    kitty waybar swaybg swayidle playerctl copyq
+    brightnessctl flameshot xdg-desktop-portal-wlr
+)
+
 echo "========================================="
 echo " CwC Dependency Builder (Pop!_OS/Ubuntu)"
 echo "========================================="
 echo ""
+
+if "$INSTALL_CONFIG"; then
+    log_info "Installing default-config runtime packages..."
+    sudo apt update
+    sudo apt install -y "${CONFIG_PKGS[@]}"
+    log_warn "Default config uses the 'Bibata-Modern-Classic' cursor theme,"
+    log_warn "which is not packaged in Ubuntu. Install it manually from"
+    log_warn "https://github.com/ful1e5/Bibata_Cursor, or edit oneshot.lua to remove it."
+fi
 
 if "$INSTALL_SYSTEM"; then
     log_info "Installing system packages..."
