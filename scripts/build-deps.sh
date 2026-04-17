@@ -67,7 +67,7 @@ SYSTEM_PKGS=(
     libxcb-dri3-dev libxcb-present-dev libxcb-render-util0-dev
     libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xinput-dev
     libxcb-composite0-dev libxcb-ewmh-dev libxcb-icccm4-dev
-    libxcb-res0-dev libxcb-errors-dev libxcb-xkb-dev
+    libxcb-res0-dev libxcb-xkb-dev
     libffi-dev libexpat1-dev libxml2-dev libliftoff-dev
 )
 

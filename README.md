@@ -121,7 +121,9 @@ emerge \=gui-wm/cwcwm-0.2.0 or \=gui-wm/cwcwm-9999 for the git version
 <details>
 <summary>Ubuntu / Pop!_OS</summary>
 
-Tested on Ubuntu 26.04 LTS. Ubuntu 24.04 may also work with additional steps.
+Tested on Ubuntu 24.04 and 26.04 LTS. Several dependencies (wayland, wlroots,
+hyprcursor, libinput, xkbcommon, pixman, libdrm, libdisplay-info, wayland-protocols)
+are built from source on 24.04 because the packaged versions are too old.
 See the full [build guide](docs/05-building.md) for details, or use the automated script:
 
 ```
