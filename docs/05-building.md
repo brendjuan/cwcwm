@@ -12,9 +12,10 @@ sudo add-apt-repository universe
 
 sudo apt update
 
-sudo apt install meson ninja-build bison wayland-protocols libwayland-dev \
+sudo apt install meson ninja-build bison python-is-python3 wayland-protocols libwayland-dev \
   libcairo2-dev libxkbcommon-dev libinput-dev libxxhash-dev \
   libluajit-5.1-dev libxcb1-dev xwayland libdrm-dev lua-lgi \
+  libevdev-dev libmtdev-dev libwacom-dev \
   libpango1.0-dev gir1.2-pango-1.0 librsvg2-dev \
   libseat-dev libudev-dev libgbm-dev libgles-dev libegl-dev \
   libvulkan-dev glslang-tools liblcms2-dev libxcb-dri3-dev \
@@ -43,7 +44,8 @@ check out the listed tag, and build/install using the project's standard method
 | 7 | [pixman](https://gitlab.freedesktop.org/pixman/pixman) | `pixman-0.46.4` | meson | |
 | 8 | [libdisplay-info](https://gitlab.freedesktop.org/emersion/libdisplay-info) | `0.3.0` | meson | |
 | 9 | [libxkbcommon](https://github.com/xkbcommon/libxkbcommon) | `xkbcommon-1.8.1` | meson | Only needed on Ubuntu 24.04 (ships 1.6.0); wlroots 0.20 requires >= 1.8.0. `-Denable-docs=false` |
-| 10 | [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots) | `0.20.0` | meson | `-Dexamples=false`; verify drm-backend is YES |
+| 10 | [libinput](https://gitlab.freedesktop.org/libinput/libinput) | `1.28.1` | meson | Only needed on Ubuntu 24.04 (ships 1.25.x, missing `libinput_device_get_id_bustype`). `-Ddebug-gui=false -Dtests=false -Ddocumentation=false` |
+| 11 | [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots) | `0.20.0` | meson | `-Dexamples=false`; verify drm-backend is YES |
 
 ## Building CwC
 
@@ -61,7 +63,9 @@ CwC should now be available in your display manager or by running `cwc` from a T
 Building on Ubuntu 24.04 may require changing `c_std=gnu23` to `c_std=gnu2x` in
 `meson.build` (see commit `d986cf5`). This has only been tested locally once.
 
-Ubuntu 24.04 ships `libxkbcommon 1.6.0`, which is older than the 1.8.0 required
-by wlroots 0.20. The build script detects this and builds a newer version from
-source into `/usr/local` (side-by-side with the system package, so GNOME/GDM
-are unaffected). Pop!_OS 24.04 ships a newer version and skips this step.
+Ubuntu 24.04 ships `libxkbcommon 1.6.0` and `libinput 1.25.x`, both older than
+required (wlroots 0.20 needs xkbcommon >= 1.8.0; cwc uses
+`libinput_device_get_id_bustype` added in libinput 1.26). The build script
+detects these and builds newer versions from source into `/usr/local`
+(side-by-side with the system packages, so GNOME/GDM are unaffected).
+Pop!_OS 24.04 ships newer versions and skips these steps.
