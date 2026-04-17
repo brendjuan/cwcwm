@@ -120,7 +120,7 @@ check_pkg "hyprcursor"       "0.1.0"  || needs_hyprcursor=true
 check_pkg "wayland-server"   "1.24.0" || needs_wayland=true
 check_pkg "wayland-protocols" "1.47"  || needs_wayland_protocols=true
 check_pkg "libdrm"           "2.4.129" || needs_libdrm=true
-check_pkg "pixman-1"         "0.43.0" || needs_pixman=true
+check_pkg "pixman-1"         "0.46.0" || needs_pixman=true
 check_pkg "libdisplay-info"  "0.2.0"  || needs_libdisplay_info=true
 check_pkg "xkbcommon"        "1.8.0"  || needs_xkbcommon=true
 check_pkg "wlroots-0.20"     "0.20.0" || needs_wlroots=true
@@ -175,14 +175,14 @@ mkdir -p "$BUILD_DIR"
 
 if "$needs_hyprutils"; then
     log_info "Building hyprutils..."
-    clone_or_update "https://github.com/hyprwm/hyprutils" "$BUILD_DIR/hyprutils" "v0.7.1"
+    clone_or_update "https://github.com/hyprwm/hyprutils" "$BUILD_DIR/hyprutils" "v0.10.4"
     cmake_build_install "$BUILD_DIR/hyprutils"
     log_ok "hyprutils installed"
 fi
 
 if "$needs_hyprlang"; then
     log_info "Building hyprlang..."
-    clone_or_update "https://github.com/hyprwm/hyprlang" "$BUILD_DIR/hyprlang" "v0.6.0"
+    clone_or_update "https://github.com/hyprwm/hyprlang" "$BUILD_DIR/hyprlang" "v0.6.8"
     cmake_build_install "$BUILD_DIR/hyprlang"
     log_ok "hyprlang installed"
 fi
@@ -217,14 +217,14 @@ fi
 
 if "$needs_pixman"; then
     log_info "Building pixman..."
-    clone_or_update "https://gitlab.freedesktop.org/pixman/pixman.git" "$BUILD_DIR/pixman" "pixman-0.43.0"
+    clone_or_update "https://gitlab.freedesktop.org/pixman/pixman.git" "$BUILD_DIR/pixman" "pixman-0.46.4"
     meson_build_install "$BUILD_DIR/pixman"
     log_ok "pixman installed"
 fi
 
 if "$needs_libdisplay_info"; then
     log_info "Building libdisplay-info..."
-    clone_or_update "https://gitlab.freedesktop.org/emersion/libdisplay-info.git" "$BUILD_DIR/libdisplay-info" "0.2.0"
+    clone_or_update "https://gitlab.freedesktop.org/emersion/libdisplay-info.git" "$BUILD_DIR/libdisplay-info" "0.3.0"
     meson_build_install "$BUILD_DIR/libdisplay-info"
     log_ok "libdisplay-info installed"
 fi
