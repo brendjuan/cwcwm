@@ -111,6 +111,7 @@ needs_wayland_protocols=false
 needs_libdrm=false
 needs_pixman=false
 needs_libdisplay_info=false
+needs_xkbcommon=false
 needs_wlroots=false
 
 check_pkg "hyprutils"        "0.7.1"  || needs_hyprutils=true
@@ -121,6 +122,7 @@ check_pkg "wayland-protocols" "1.38"  || needs_wayland_protocols=true
 check_pkg "libdrm"           "2.4.129" || needs_libdrm=true
 check_pkg "pixman-1"         "0.43.0" || needs_pixman=true
 check_pkg "libdisplay-info"  "0.2.0"  || needs_libdisplay_info=true
+check_pkg "xkbcommon"        "1.8.0"  || needs_xkbcommon=true
 check_pkg "wlroots-0.20"     "0.20.0" || needs_wlroots=true
 
 # hyprutils/hyprlang/hyprcursor chain: if a dep needs building, rebuild dependents
@@ -225,6 +227,13 @@ if "$needs_libdisplay_info"; then
     clone_or_update "https://gitlab.freedesktop.org/emersion/libdisplay-info.git" "$BUILD_DIR/libdisplay-info" "0.2.0"
     meson_build_install "$BUILD_DIR/libdisplay-info"
     log_ok "libdisplay-info installed"
+fi
+
+if "$needs_xkbcommon"; then
+    log_info "Building xkbcommon..."
+    clone_or_update "https://github.com/xkbcommon/libxkbcommon.git" "$BUILD_DIR/libxkbcommon" "xkbcommon-1.8.1"
+    meson_build_install "$BUILD_DIR/libxkbcommon" -Denable-docs=false
+    log_ok "xkbcommon installed"
 fi
 
 if "$needs_wlroots"; then
