@@ -101,6 +101,7 @@ SYSTEM_PKGS=(
 CONFIG_PKGS=(
     kitty waybar swaybg swayidle playerctl copyq
     brightnessctl flameshot xdg-desktop-portal-wlr
+    fonts-font-awesome fonts-noto
 )
 
 echo "========================================="

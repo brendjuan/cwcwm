@@ -78,7 +78,8 @@ programs. Install them or edit the config to remove the ones you don't want:
 
 ```bash
 sudo apt install kitty waybar swaybg swayidle playerctl copyq \
-  brightnessctl flameshot xdg-desktop-portal-wlr
+  brightnessctl flameshot xdg-desktop-portal-wlr \
+  fonts-font-awesome fonts-noto
 ```
 
 Or via the build script:
