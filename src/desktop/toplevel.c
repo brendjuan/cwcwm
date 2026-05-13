@@ -372,30 +372,39 @@ static void on_surface_commit(struct wl_listener *listener, void *data)
         toplevel->resize_serial = 0;
     }
 
+    /* nothing to do when geometry is unchanged */
+    struct wlr_box geom = cwc_toplevel_get_geometry(toplevel);
+    if (wlr_box_equal(&geom, &toplevel->geometry))
+        return;
+    toplevel->geometry = geom;
+
     if (!container || toplevel->xdg_toplevel->current.resizing
         || cwc_container_get_front_toplevel(container) != toplevel
         || !cwc_output_is_exist(container->output)
         || !cwc_toplevel_is_mapped(toplevel))
         return;
 
-    struct wlr_box geom = cwc_toplevel_get_geometry(toplevel);
-    int thickness       = cwc_border_get_thickness(&container->border);
+    int thickness = cwc_border_get_thickness(&container->border);
 
-    // adjust clipping to follow the tiled size
-    if (!cwc_toplevel_is_floating(toplevel)) {
-        int gaps =
-            cwc_output_get_current_tag_info(container->output)->useless_gaps;
+    if (cwc_toplevel_is_fullscreen(toplevel))
+        return;
+
+    if (cwc_toplevel_is_maximized(toplevel)) {
+        cwc_toplevel_set_maximized(toplevel, true);
+    } else if (!cwc_toplevel_is_floating(toplevel)) {
+        /* adjust clipping to follow the tiled size */
+        int gaps          = cwc_container_get_gaps(container);
         int outside_width = (thickness + gaps) * 2;
         geom.width        = container->width - outside_width;
         geom.height       = container->height - outside_width;
         wlr_scene_subsurface_tree_set_clip(&toplevel->surf_tree->node, &geom);
-        return;
+    } else {
+        /* follow geometry when floating */
+        cwc_toplevel_set_size_surface(toplevel, geom.width, geom.height);
+        wlr_scene_subsurface_tree_set_clip(&toplevel->surf_tree->node, &geom);
+        cwc_border_resize(&container->border, geom.width + thickness * 2,
+                          geom.height + thickness * 2);
     }
-
-    cwc_toplevel_set_size_surface(toplevel, geom.width, geom.height);
-    wlr_scene_subsurface_tree_set_clip(&toplevel->surf_tree->node, &geom);
-    cwc_border_resize(&container->border, geom.width + thickness * 2,
-                      geom.height + thickness * 2);
 }
 
 static void on_request_maximize(struct wl_listener *listener, void *data)
@@ -1279,8 +1288,7 @@ struct wlr_box cwc_toplevel_get_geometry(struct cwc_toplevel *toplevel)
 
 void cwc_toplevel_set_size_surface(struct cwc_toplevel *toplevel, int w, int h)
 {
-    int gaps = cwc_output_get_current_tag_info(toplevel->container->output)
-                   ->useless_gaps;
+    int gaps = cwc_container_get_gaps(toplevel->container);
     int outside_width =
         (cwc_border_get_thickness(&toplevel->container->border) + gaps) * 2;
 
